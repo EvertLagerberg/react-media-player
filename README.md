@@ -1,40 +1,47 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Media player
+Create a React media application which is capable of doing basic video player functionalities. 
 
-## Getting Started
+Note: Having proper design is always nice to have but is not a must. We are mainly curious about the core logic of the application. Please feel free to have bare minimum styling for the elements.
 
-First, run the development server:
+## Playlist
+The player has a default playlist of 3 media by default. To create the playlist pick any 3 of the publicly available media (https://gist.github.com/jsturgis/3b19447b304616f18657). 
+In addition to the default playlist the player should also allow the user to add/remove urls. Error handling is not necessary, we can assume that the user always provides a url with valid media. All the items from the playlist should be visible to the user and the currently played one should be in bold.
+- Create a list of media from the playback
+- Highlight the currently played media by making the text bold
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Adding media to playlist
+It should add the url to the playlist upon pressing enter in the input or clicking on the submit button
+- Create a text input
+- Create a submit button
+
+### Removing media from the playlist
+- Create a remove button next to each of the media items
+
+## Player controls
+### Functionalities
+- Go to previous media (`assets/previous.svg`)
+  - Go to the previous item from the playlist. Goes to the last media if the player was on the first.
+- Fast backwards 10 seconds (`assets/backward.svg`)
+  - Rewind the media by 10 seconds
+- Play/pause button (`assets/play.svg` and `assets/pause.svg`)
+  - The buttons should be in the same position in the middle of the controls
+  - Show play button when the player is paused and show pause button when the content is playing
+- Fast forwards 10 seconds (`assets/forward.svg`)
+  - Advances time by 10 seconds
+- Go to next media (`assets/next.svg`)
+  - Go to the next item from the playlist. Goes to the first media if the player was on the last.
+
+### Design
+The controls should have unique icons. Please find them in the `assets/` folder.
+
+#### Media is playing
+```
+| ⏮ | ⏪ | ⏸ | ⏩ | ⏭ |
+```
+#### Media is paused
+```
+| ⏮ | ⏪ | ⏵ | ⏩ | ⏭ |
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Submission
+Your solution can be emailed back to us as a Zip file, or uploaded to any git solution you'd like with a link to the public/private repository.
