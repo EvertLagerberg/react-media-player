@@ -5,11 +5,9 @@ import Playlist from "@/components/playlist";
 import { Media } from "@/types";
 import AddMediaForm from "./addMediaForm";
 
-const MediaPlayer = () => {
-  const [movies] = media.categories;
-  const defaultPlaylist = movies.videos.slice(0, 3);
+const usePlaylist = (defaultPlaylist: Media[]) => {
   const [playlist, setPlaylist] = useState<Media[]>(defaultPlaylist);
-  const [current, setCurrent] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const addMedia = (input: {
     title: string;
@@ -28,41 +26,63 @@ const MediaPlayer = () => {
     const newPlaylist = [...playlist];
     newPlaylist.splice(index, 1);
     setPlaylist(newPlaylist);
-    if (current === index) {
-      setCurrent(0);
-    } else if (current > index) {
-      setCurrent(current - 1);
+    if (currentIndex === index) {
+      setCurrentIndex(0);
+    } else if (currentIndex > index) {
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
-  const playPreviousMedia = () => {
-    if (current > 0) {
-      setCurrent(current - 1);
+  const goToPrevMedia = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
     } else {
-      setCurrent(playlist.length - 1);
+      setCurrentIndex(playlist.length - 1);
     }
   };
 
-  const playNextMedia = () => {
-    if (current < playlist.length - 1) {
-      setCurrent(current + 1);
+  const goToNextMedia = () => {
+    if (currentIndex < playlist.length - 1) {
+      setCurrentIndex(currentIndex + 1);
     } else {
-      setCurrent(0);
+      setCurrentIndex(0);
     }
   };
+
+  return {
+    playlist,
+    currentIndex,
+    addMedia,
+    removeMedia,
+    goToPrevMedia,
+    goToNextMedia,
+  };
+};
+
+const MediaPlayer = () => {
+  const [movies] = media.categories;
+  const defaultPlaylist = movies.videos.slice(0, 3);
+  const {
+    playlist,
+    currentIndex,
+    goToPrevMedia,
+    goToNextMedia,
+    addMedia,
+    removeMedia,
+  } = usePlaylist(defaultPlaylist);
 
   return (
     <div className="flex flex-col gap-2 w-full">
       {!!playlist.length ? (
         <>
           <Player
-            media={playlist[current]}
-            playPreviousMedia={playPreviousMedia}
-            playNextMedia={playNextMedia}
+            media={playlist[currentIndex]}
+            goToPrevMedia={goToPrevMedia}
+            goToNextMedia={goToNextMedia}
           />
           <Playlist
             playlist={playlist}
-            current={current}
+            currentIndex={currentIndex}
             removeMedia={removeMedia}
           />
         </>

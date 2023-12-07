@@ -1,18 +1,10 @@
-import { Media } from "@/types";
 import { useRef, useState } from "react";
 import IconButton from "./iconButton";
+import { Media } from "@/types";
 
-interface PlayerProps {
-  media: Media;
-  playPreviousMedia: () => void;
-  playNextMedia: () => void;
-}
-
-const Player = ({ media, playPreviousMedia, playNextMedia }: PlayerProps) => {
+const usePlayerControls = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { sources } = media;
-  const url = sources[0];
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -23,6 +15,47 @@ const Player = ({ media, playPreviousMedia, playNextMedia }: PlayerProps) => {
       }
     }
   };
+
+  const fastBackward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime -= 10;
+    }
+  };
+
+  const fastForward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime += 10;
+    }
+  };
+
+  return {
+    videoRef,
+    isPlaying,
+    setIsPlaying,
+    togglePlay,
+    fastBackward,
+    fastForward,
+  };
+};
+
+interface PlayerProps {
+  media: Media;
+  goToPrevMedia: () => void;
+  goToNextMedia: () => void;
+}
+
+const Player = ({ media, goToPrevMedia, goToNextMedia }: PlayerProps) => {
+  const { sources } = media;
+  const url = sources[0];
+
+  const {
+    videoRef,
+    isPlaying,
+    setIsPlaying,
+    togglePlay,
+    fastForward,
+    fastBackward,
+  } = usePlayerControls();
 
   const handleLoadStart = () => {
     setIsPlaying(false);
@@ -37,19 +70,7 @@ const Player = ({ media, playPreviousMedia, playNextMedia }: PlayerProps) => {
   };
 
   const handleEnded = () => {
-    playNextMedia();
-  };
-
-  const fastBackward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime -= 10;
-    }
-  };
-
-  const fastForward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime += 10;
-    }
+    goToNextMedia();
   };
 
   return (
@@ -68,14 +89,14 @@ const Player = ({ media, playPreviousMedia, playNextMedia }: PlayerProps) => {
         </div>
       </div>
       <div className="flex justify-between w-full py-4">
-        <IconButton iconName="previous" onClick={playPreviousMedia} />
+        <IconButton iconName="previous" onClick={goToPrevMedia} />
         <IconButton iconName="backward" onClick={fastBackward} />
         <IconButton
           iconName={isPlaying ? "pause" : "play"}
           onClick={togglePlay}
         />
         <IconButton iconName="forward" onClick={fastForward} />
-        <IconButton iconName="next" onClick={playNextMedia} />
+        <IconButton iconName="next" onClick={goToNextMedia} />
       </div>
     </>
   );

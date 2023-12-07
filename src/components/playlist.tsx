@@ -30,11 +30,11 @@ const PlaylistItem = ({ media, isActive, children }: PlaylistItemProps) => {
 
 interface PlaylistProps {
   playlist: Media[];
-  current: number;
+  currentIndex: number;
   removeMedia: (index: number) => void;
 }
 
-const Playlist = ({ playlist, current, removeMedia }: PlaylistProps) => {
+const Playlist = ({ playlist, currentIndex, removeMedia }: PlaylistProps) => {
   return (
     <>
       {playlist.map((media, index) => {
@@ -43,7 +43,7 @@ const Playlist = ({ playlist, current, removeMedia }: PlaylistProps) => {
           <PlaylistItem
             key={media.title}
             media={media}
-            isActive={index === current}
+            isActive={index === currentIndex}
           >
             <button
               onClick={onClickRemove}
