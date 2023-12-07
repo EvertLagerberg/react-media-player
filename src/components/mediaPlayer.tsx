@@ -1,70 +1,75 @@
+import Player from "@/components/player";
+import media from "@/media.json";
+import { useState } from "react";
+import Playlist from "@/components/playlist";
 import { Media } from "@/types";
-import { useRef, useState } from "react";
-import IconButton from "./iconButton";
+import AddMediaForm from "./addMediaForm";
 
-interface MediaPlayerProps {
-  media: Media;
-  playPreviousMedia: () => void;
-  playNextMedia: () => void;
-}
+const MediaPlayer = () => {
+  const [movies] = media.categories;
+  const defaultPlaylist = movies.videos.slice(0, 3);
+  const [playlist, setPlaylist] = useState<Media[]>(defaultPlaylist);
+  const [current, setCurrent] = useState(0);
 
-const MediaPlayer = ({
-  media,
-  playPreviousMedia,
-  playNextMedia,
-}: MediaPlayerProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { sources, title } = media;
-  const url = sources[0];
+  const addMedia = (input: {
+    title: string;
+    description: string;
+    url: string;
+  }) => {
+    const newMedia = {
+      title: input.title,
+      description: input.description,
+      sources: [input.url],
+    };
+    setPlaylist([...playlist, newMedia]);
+  };
 
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        videoRef.current.play();
-        setIsPlaying(true);
-      }
+  const removeMedia = (index: number) => {
+    const newPlaylist = [...playlist];
+    newPlaylist.splice(index, 1);
+    setPlaylist(newPlaylist);
+    if (current === index) {
+      setCurrent(0);
+    } else if (current > index) {
+      setCurrent(current - 1);
     }
   };
 
-  const fastBackward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime -= 10;
+  const playPreviousMedia = () => {
+    if (current > 0) {
+      setCurrent(current - 1);
+    } else {
+      setCurrent(playlist.length - 1);
     }
   };
 
-  const fastForward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime += 10;
+  const playNextMedia = () => {
+    if (current < playlist.length - 1) {
+      setCurrent(current + 1);
+    } else {
+      setCurrent(0);
     }
-  };
-
-  const playPrev = () => {
-    playPreviousMedia();
-    setIsPlaying(false);
-  };
-
-  const playNext = () => {
-    playNextMedia();
-    setIsPlaying(false);
   };
 
   return (
-    <div>
-      <video ref={videoRef} src={url} controls />
-      <div className="flex justify-between">
-        <IconButton iconName="previous" onClick={playPrev} />
-        <IconButton iconName="backward" onClick={fastBackward} />
-        <IconButton
-          iconName={isPlaying ? "pause" : "play"}
-          onClick={togglePlay}
-        />
-        <IconButton iconName="forward" onClick={fastForward} />
-        <IconButton iconName="next" onClick={playNext} />
-      </div>
+    <div className="flex flex-col gap-2 w-full">
+      {!!playlist.length ? (
+        <>
+          <Player
+            media={playlist[current]}
+            playPreviousMedia={playPreviousMedia}
+            playNextMedia={playNextMedia}
+          />
+          <Playlist
+            playlist={playlist}
+            current={current}
+            removeMedia={removeMedia}
+          />
+        </>
+      ) : (
+        <p className="text-2xl self-center">No media in playlist</p>
+      )}
+      <AddMediaForm onSubmit={addMedia} />
     </div>
   );
 };
