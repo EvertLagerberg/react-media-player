@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import MediaPlayer from "@/components/mediaPlayer";
 const inter = Inter({ subsets: ["latin"] });
